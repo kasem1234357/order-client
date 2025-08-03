@@ -58,6 +58,7 @@ export const Api = createApi({
     "notifications",
     "report",
     "single-booking",
+    "orders"
   ],
   endpoints: (builder) => ({
     createOrder:builder.mutation({
@@ -69,6 +70,7 @@ export const Api = createApi({
           "Content-type": "application/json; charset=UTF-8",
         },
       }),
+      invalidatesTags:['orders']
     }),
     editOrder:builder.mutation({
        query: ({id,data}) => ({
@@ -79,6 +81,7 @@ export const Api = createApi({
           "Content-type": "application/json; charset=UTF-8",
         },
       }),
+      invalidatesTags:['orders']
     }),
     updateOrderStage:builder.mutation({
        query: ({id,stage,weight,date}) => ({
@@ -89,6 +92,7 @@ export const Api = createApi({
           "Content-type": "application/json; charset=UTF-8",
         },
       }),
+      invalidatesTags:['orders']
     }),
     cancelOrder:builder.mutation({
        query: ({id,stage}) => ({
@@ -99,20 +103,25 @@ export const Api = createApi({
           "Content-type": "application/json; charset=UTF-8",
         },
       }),
+      invalidatesTags:['orders']
     }),
     getOrderById: builder.query({
       query: ({id}) =>
         `/api/orders/${id}`,
+      providesTags:['orders']
       
     }), 
     getAllOrders: builder.query({
       query: ({currentPage,limit,stage='',price='',createdAt='',invoiceDate='',deliveryDate='',clientName='',createdBy='',orderNumber=''}) =>
         `/api/orders?limit=${limit}&page=${currentPage}&stage.name=${stage}&price=${price}&createdAt=${createdAt}&invoiceDate=${invoiceDate}&deliveryDate=${deliveryDate}&clientName=${clientName}&createdBy=${createdBy}&orderNumber=${orderNumber}`,
+      providesTags:['orders']
+
       
     }),
     getOrderHistory: builder.query({
       query: ({id}) =>
         `/api/orders/history/${id}`,
+      providesTags:['orders']
       
     }), 
      getAllUsers: builder.query({
