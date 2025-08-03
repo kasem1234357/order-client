@@ -6,7 +6,7 @@ import { checkPath, cn, toastMessage, toBoolean } from "../utils/utils";
 import { DictionaryType, enumSectionType, MenuItem } from "../types";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import usePreNavigation from "../hooks/usePreNavigation";
-import modelLogo from "../assets/icons/mocionLogo.svg";
+import modelLogo from "../assets/icons/logo.png";
 import { FORM_ROUTES, MOBILE_VIEW_ENDPOINT } from "../constants";
 
 import { useDispatch, useSelector } from "react-redux";

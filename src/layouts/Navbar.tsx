@@ -2,31 +2,22 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useState, useRef } from "react";
 import { routes } from "../config/routesConfig";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
-import logo from "../assets/icons/mocionLogo.svg";
+import logo from "../assets/icons/logo.png";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  changePremission,
-  selectClub,
-  setClubs,
-  setLang,
+
   UserSliceType,
 } from "../lib/redux/slices/userSlice";
 
 import NavBarProfile from "./NavBarProfile";
 import usePreNavigation from "../hooks/usePreNavigation";
-import { FORM_ROUTES } from "../constants";
-import { checkPath } from "../utils/utils";
+
 import Button from "../components/global/Button";
 import Modal from "../components/global/Modal";
 import { useGetDictionary } from "../hooks/useGetDictionary";
-import { Tooltip } from "react-tooltip";
-import Select from "react-select";
-import { selectStyle, selectTheme } from "../styles/selectStyles";
+
 import { DictionaryType } from "../types";
-import DarkModeToggle from "../components/global/DarkModeToggle";
-import ImageIcon from "../components/global/ImageIcon";
-import MessageIcon from "../assets/icons/MessageIcon";
-import NotificationsIcon from "../assets/icons/NotificationsIcon";
+
 type Props = {
   openHelpCenter: boolean;
   setOpenHelpCenter: React.Dispatch<React.SetStateAction<boolean>>;

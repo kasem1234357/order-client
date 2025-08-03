@@ -7,6 +7,7 @@ import { useLoginMutation } from '../lib/redux/services/sections/Auth'
 import { toast } from 'react-toastify'
 import { toastMessage } from '../utils/utils'
 import { useNavigate } from 'react-router-dom'
+import bg from '../assets/icons/bg.svg'
 
 type Props = {}
 
@@ -33,8 +34,9 @@ function LoginPage({}: Props) {
     }
   }
   return (
-    <div className='w-full h-full flex justify-center items-center bg-white min-h-screen'>
-      <form  className='p-5 shadow-md rounded-md bg-white min-w-[320px] flex flex-col justify-center items-center gap-8 border border-primary' onSubmit={handleSubmit(onSubmit)}>
+    <div className='w-full h-full flex justify-center items-center bg-white min-h-screen relative'>
+      <img src={bg} alt="" className='w-full h-full inset-0 absolute object-cover z-10' />
+      <form  className='p-5 shadow-md rounded-md bg-white min-w-[320px] flex flex-col justify-center items-center gap-8 border border-secondary z-20' onSubmit={handleSubmit(onSubmit)}>
         <h1 className='font-bold text-lg '>Login</h1>
          <div className="gap-4 flex flex-col items-center ">
            <div className="flex-1 min-w-[250px]">

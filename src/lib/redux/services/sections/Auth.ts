@@ -19,7 +19,7 @@ export const Endpoints = Api.injectEndpoints({
     //!!!!!!!!!!!!!!limit for the request!!!!!!!!!!!!
     register: builder.mutation({
       query: (data) => ({
-        url: "/api/user/register",
+        url: "/api/user/signup",
         method: "POST",
         body: data,
         headers: {
