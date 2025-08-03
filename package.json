@@ -1,0 +1,79 @@
+{
+  "name": "mocion",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@emotion/react": "^11.13.3",
+    "@emotion/styled": "^11.13.0",
+    "@hookform/resolvers": "^5.1.1",
+    "@radix-ui/react-slot": "^1.1.1",
+    "@react-google-maps/api": "^2.20.6",
+    "@reduxjs/toolkit": "^2.5.0",
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "@types/google.maps": "^3.58.1",
+    "@types/jest": "^27.5.2",
+    "@types/node": "^16.18.108",
+    "@types/react": "^18.3.8",
+    "@types/react-dom": "^18.3.0",
+    "@types/react-tooltip": "^3.11.0",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "html-react-parser": "^5.2.6",
+    "leaflet": "^1.9.4",
+    "lodash.debounce": "^4.0.8",
+    "lucide-react": "^0.469.0",
+    "react": "^18.3.1",
+    "react-day-picker": "^9.5.0",
+    "react-dom": "^18.3.1",
+    "react-hook-form": "^7.60.0",
+    "react-leaflet": "^4.2.1",
+    "react-paginate": "^8.2.0",
+    "react-phone-input-2": "^2.15.1",
+    "react-redux": "^9.2.0",
+    "react-router-dom": "^6.26.2",
+    "react-scripts": "5.0.1",
+    "react-select": "^5.9.0",
+    "react-slick": "^0.30.2",
+    "react-toastify": "^10.0.6",
+    "react-tooltip": "^5.28.0",
+    "slick-carousel": "^1.8.1",
+    "tailwind-merge": "^2.6.0",
+    "tailwindcss-animate": "^1.0.7",
+    "typescript": "^4.9.5",
+    "web-vitals": "^2.1.4",
+    "xlsx": "^0.18.5",
+    "zod": "^4.0.5"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "@types/leaflet": "^1.9.14",
+    "@types/react-slick": "^0.23.13",
+    "tailwindcss": "^3.4.17"
+  }
+}
