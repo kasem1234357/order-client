@@ -41,7 +41,7 @@ function OrderTable({
   const [row, setRow] = useState<any>({});
   const location = useLocation();
   const config: tableConfig = {
-     roleId: {
+     isActive: {
           isCustomViewChildren: true,
           customViewChildren: (row, tag) => {
           
@@ -51,12 +51,12 @@ function OrderTable({
                 <div
                   className={cn(
                     "grid place-content-center px-4 py-2 rounded-3xl w-[100px] mx-auto",
-                    row[tag.split('.')[0]]?.status?.toLowerCase() === "active"
+                    row[tag]
                       ? "bg-[#34C759] text-primary dark:text-white"
                       : "text-[#F3F3F3] bg-[#EF4626]"
                   )}
                 >
-                  {row[tag.split('.')[0]]?.status?.toLowerCase() === "active" ? 'Active': "inActive"}
+                  {row[tag]? 'Active': "inActive"}
                 </div>
               </td>
             );

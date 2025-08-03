@@ -84,7 +84,7 @@ function Users({}: Props) {
     },
     {
       title: 'status',
-      tag: "roleId.status",
+      tag: "isActive",
     },
     {
       title: "",
