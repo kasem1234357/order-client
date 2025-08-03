@@ -71,20 +71,20 @@ const NavBarProfile = ({  }: props) => {
   };
 
   const profileBox = [
-    {
-      name: profile.profile_menu.my_profile,
-      tag: "myProfile",
-      icon: ProfileIcon,
-      action: "navigateToProfile",
-      color: "#1e1850",
-    },
-    {
-      name: profile.profile_menu.help_center,
-      tag: "helpCenter",
-      icon: HelpCenterIcon,
-      action: "openHelpCenter",
-      color: "#1e1850",
-    },
+    // {
+    //   name: profile.profile_menu.my_profile,
+    //   tag: "myProfile",
+    //   icon: ProfileIcon,
+    //   action: "navigateToProfile",
+    //   color: "#1e1850",
+    // },
+    // {
+    //   name: profile.profile_menu.help_center,
+    //   tag: "helpCenter",
+    //   icon: HelpCenterIcon,
+    //   action: "openHelpCenter",
+    //   color: "#1e1850",
+    // },
     {
       name: profile.profile_menu.logout,
       tag: "logout",
