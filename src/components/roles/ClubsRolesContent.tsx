@@ -63,7 +63,7 @@ function ClubsRolesContent({
             title: route.title,
             read: true,
             create: false,
-            write: false,
+            edit: false,
             delete: false,
             icon: route.icon,
           };
@@ -256,9 +256,9 @@ function ClubsRolesContent({
                     if(type === 'view'){
                         return
                       }
-                    selectAll("write")
+                    selectAll("edit")
                     }}>
-                    {inputs.write}
+                    'edit'
                   </th>
                   <th className="p-2 text-primary dark:text-white font-normal text-center cursor-pointer" onClick={()=>{
                     if(type === 'view'){
@@ -280,15 +280,15 @@ function ClubsRolesContent({
                       const items = watch(`permissions.${index}`)
                       
                       //@ts-ignore
-                      if(items.read || items.create || items.write || items.delete){
+                      if(items.read || items.create || items.edit || items.delete){
                         setValue(`permissions.${index}.read`,false)
                         setValue(`permissions.${index}.create`,false)
-                        setValue(`permissions.${index}.write`,false)
+                        setValue(`permissions.${index}.edit`,false)
                         setValue(`permissions.${index}.delete`,false)
                       }else{
                         setValue(`permissions.${index}.read`,true)
                         setValue(`permissions.${index}.create`,true)
-                        setValue(`permissions.${index}.write`,true)
+                        setValue(`permissions.${index}.edit`,true)
                         setValue(`permissions.${index}.delete`,true)
                        
                       }
@@ -301,7 +301,7 @@ function ClubsRolesContent({
                     </td>
                     {/* @ts-ignore */}
 
-                    {["read", "create", "write", "delete"].map(
+                    {["read", "create", "edit", "delete"].map(
                       (permission, index2) => {
                         return(
                           <td key={permission+field.section} className="p-2 py-3 text-center ">
