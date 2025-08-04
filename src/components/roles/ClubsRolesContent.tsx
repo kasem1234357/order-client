@@ -344,7 +344,7 @@ function ClubsRolesContent({
           </div>
            <div className="overflow-x-auto flex flex-col gap-4  overflow-hidden customScroll">
             <h3 className="text-lg font-bold text-primary dark:text-white ">
-              Allow Fields
+              Hide Fields
             </h3>
             <table className="min-w-full  overflow-y-auto border-collapse border border-gray-300 rounded-lg">
               <thead className="sticky top-0 z-10 ">
