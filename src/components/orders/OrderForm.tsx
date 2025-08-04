@@ -79,7 +79,7 @@ type Props = {
 const OrderForm = ({ removeAnimation, type = "new", rowData ,tableId}: Props) => {
   const [createOrder] = useCreateOrderMutation()
   const [editOrder] = useEditOrderMutation()
-  const role = useSelector((state:any)=>state.user?.user?.role)
+  const role = useSelector((state:any)=>state.user?.user?.role?.currentRole)
   console.log(role);
   
   const {data,isFetching,isLoading,isSuccess} = useGetOrderByIdQuery({
@@ -176,7 +176,7 @@ const OrderForm = ({ removeAnimation, type = "new", rowData ,tableId}: Props) =>
                  <Controller
           name="orderNumber"
           control={control}
-          rules={{ required: true }}
+          rules={{ required: (!role ||!role?.fieldsPermissions?.includes('orderNumber')) }}
           render={({ field }) => <Input label="رقم الطلب" inputProps={{...field}} />}
         />
         {errors.orderNumber && <ValidateError />}
@@ -186,7 +186,7 @@ const OrderForm = ({ removeAnimation, type = "new", rowData ,tableId}: Props) =>
                 <div className="w-full">
                   <Controller
                     name="clientName"
-                    rules={{ required: true }}
+                    rules={{ required: (!role ||!role?.fieldsPermissions?.includes('clientName')) }}
                     control={control}
                     render={({ field }) => (
                       <Input
@@ -218,7 +218,7 @@ const OrderForm = ({ removeAnimation, type = "new", rowData ,tableId}: Props) =>
                 <div className="w-full">
                   <Controller
                     name="price"
-                    rules={{ required: true }}
+                    rules={{ required: (!role ||!role?.fieldsPermissions?.includes('price')) }}
                     control={control}
                     render={({ field }) => (
                       <Input
@@ -252,7 +252,7 @@ const OrderForm = ({ removeAnimation, type = "new", rowData ,tableId}: Props) =>
                 <div className="w-full">
                   <Controller
                     name="gramage"
-                    rules={{ required: true }}
+                    rules={{ required: (!role ||!role?.fieldsPermissions?.includes('gramage')) }}
                     control={control}
                     render={({ field }) => (
                       <Input
@@ -286,7 +286,7 @@ const OrderForm = ({ removeAnimation, type = "new", rowData ,tableId}: Props) =>
                 <div className="w-full">
                   <Controller
                     name="storage"
-                    rules={{ required: true }}
+                    rules={{ required: (!role ||!role?.fieldsPermissions?.includes('storage')) }}
                     control={control}
                     render={({ field }) => (
                       <Input
@@ -423,6 +423,7 @@ const OrderForm = ({ removeAnimation, type = "new", rowData ,tableId}: Props) =>
           name="invoiceDate"
           control={control}
           render={({ field }) => <DateInput name="invoiceDate" title="تاريخ الايصال" ar={true} dateInputProps={{ ...field }}
+          isRequired={ (!role ||!role?.fieldsPermissions?.includes('invoiceDate')) }
           placeHolder="date" handleChangeEvent={(e) => {
                       setValue("invoiceDate", e.replace("Sept", "Sep"));
                    
@@ -481,6 +482,7 @@ const OrderForm = ({ removeAnimation, type = "new", rowData ,tableId}: Props) =>
           name="deliveryDate"
           control={control}
           render={({ field }) => <DateInput name="deliveryDate" title="تاريخ التسليم" ar={true}  dateInputProps={{ ...field }}
+          isRequired={ (!role ||!role?.fieldsPermissions?.includes('deliveryDate')) }
           placeHolder="date" handleChangeEvent={(e) => {
                       setValue("deliveryDate", e.replace("Sept", "Sep"));
                    
