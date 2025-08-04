@@ -247,7 +247,7 @@ function Header({
                 getFunction={useGetAllOrdersQuery}
                 getFunctionParams={{
                   club_id: clubId,
-                  limit: 5000,
+                  limit: 1000,
                   name: search,
                   ...filter,
                 }}
