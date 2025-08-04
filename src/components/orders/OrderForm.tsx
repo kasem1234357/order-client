@@ -12,6 +12,7 @@ import RadioInput from "../global/RadioInput";
 import { CURRENCY } from "../../constants";
 import { useCreateOrderMutation, useEditOrderMutation, useGetOrderByIdQuery } from "../../lib/redux/services/Api";
 import Loader from "../skeletons/Loader";
+import { useSelector } from "react-redux";
 
 // Enum Options
 const statusOptions = ["Pending", "In Progress", "Completed", "Cancelled"] as const;
@@ -78,6 +79,9 @@ type Props = {
 const OrderForm = ({ removeAnimation, type = "new", rowData ,tableId}: Props) => {
   const [createOrder] = useCreateOrderMutation()
   const [editOrder] = useEditOrderMutation()
+  const role = useSelector((state:any)=>state.user?.user?.role)
+  console.log(role);
+  
   const {data,isFetching,isLoading,isSuccess} = useGetOrderByIdQuery({
     id:tableId
   },{
