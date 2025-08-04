@@ -30,6 +30,7 @@ import HelpCenterIcon from "../assets/icons/HelpCenterIcon";
 import useDarkMode from "../hooks/useDarkMode";
 import ProfileIcon from "../assets/icons/ProfileIcon";
 import { toast } from "react-toastify";
+import { Api } from "../lib/redux/services/Api";
 type props = {
   
 };
@@ -158,7 +159,7 @@ const NavBarProfile = ({  }: props) => {
                       localStorage.clear();
 
                     
-
+                      dispatch(Api.util.resetApiState());
                       navigate("/login");
                       //set the theme to light
                       document.documentElement.classList.remove("dark");
