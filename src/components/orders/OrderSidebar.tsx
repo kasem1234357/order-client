@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { cn } from "../../utils/utils";
 import OrderForm from "./OrderForm";
 import OrderHistory from "./OrderHistory";
+import { useSelector } from "react-redux";
 //import BookingHistory from "../../booking/BookingHistory";
 
 type Props = {
@@ -30,13 +31,14 @@ function OrderSidebar({
     "new" | "edit" | "add player" | "duplicate" | "view"|'edit-all'
   >("new");
    const [pageType, setPageType] = useState<"details" | "history">("details");
+     const isAdmin = useSelector((state:any)=>state.user?.user?.currentUser?.isAdmin)
   useEffect(() => {
     setActionType(type);
   }, [type, tableId]);
 
   return (
     <>
-     { (type !== 'new' && type !== 'duplicate')&& <ul className="flex
+     { (type !== 'new' && type !== 'duplicate' && isAdmin)&& <ul className="flex
             gap-[16px]
             pt-[40px] px-[20px]
             border-b-[2px]
