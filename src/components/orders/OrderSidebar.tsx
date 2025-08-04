@@ -31,7 +31,7 @@ function OrderSidebar({
     "new" | "edit" | "add player" | "duplicate" | "view"|'edit-all'
   >("new");
    const [pageType, setPageType] = useState<"details" | "history">("details");
-     const isAdmin = useSelector((state:any)=>state.user?.user)
+     const isAdmin = useSelector((state:any)=>state.user?.user?.user?.currentUser?.isAdmin)
      console.log(isAdmin);
      
   useEffect(() => {
