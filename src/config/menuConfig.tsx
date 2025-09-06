@@ -38,6 +38,13 @@ export const MenuItems: MenuItem[] = [
     isGroupItem: false,
     Icon: ClubAdminsIcon,
   },
+    {
+    title: "Material",
+    href: "/material",
+    tag: "Material",
+    isGroupItem: false,
+    Icon: ClubAdminsIcon,
+  },
 
 ]
   //   title: "Competitive",

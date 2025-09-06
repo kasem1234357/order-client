@@ -11,8 +11,6 @@ import SideBar from "../global/SideBar";
 import { useGetDictionary } from "../../hooks/useGetDictionary";
 import { DictionaryType } from "../../types";
 import { useLocation } from "react-router-dom";
-import OrderSidebar from "./OrderSidebar";
-import Controll from "./Controll";
 
 type Props = {
   data: any;
@@ -23,7 +21,7 @@ type Props = {
   selectedCalenderSlot: any;
   setSelectedCalenderSlot: any;
 };
-function OrderTable({
+function MaterialTable({
   data,
   columns,
   limitedFields,
@@ -67,19 +65,19 @@ function OrderTable({
           },
           {
             name: "fraza delivered",
-            bgColor: "bg-[#936639]",
-            textColor: "text-white dark:text-white",
+            bgColor: "bg-[#34C759]",
+            textColor: "text-primary dark:text-white",
             label: 'يتم الفرز',
           },
           {
             name: "qsasa delivered",
-            bgColor: "bg-[#9d4edd]",
-            textColor: "text-white dark:text-white",
+            bgColor: "bg-[#34C759]",
+            textColor: "text-primary dark:text-white",
             label: 'يتم القص',
           },
            {
             name: "return recorded",
-            bgColor: "bg-[#e9c46a]",
+            bgColor: "bg-[#34C759]",
             textColor: "text-primary dark:text-white",
             label: 'تم الارجاع',
           },
@@ -121,34 +119,6 @@ function OrderTable({
         );
       },
     },
-    isApproved:{
-      tdClassName:"justify-center",
-      customClassName:"justify-center w-full grid place-content-center w-[100px] p-2 text-white rounded-lg",
-       isBoolValue:true,
-       EnumBoolValue:{
-        inFalse:"غير موافق",
-        inTrue:"موافق عليه",
-        falsyClassNames:"bg-primaryRed",
-        truethlyClassNames:"bg-primaryGreen"
-       }
-    },
-    returnedWeight:{
-      isCustomViewChildren:true,
-      customViewChildren(row, tag, setCurrentTrStyle, rowIndex, offsetLeft) {
-        return (
-           <td className="flex-1 p-4  min-w-[150px] text-center">
-            <div
-              className={cn(
-                "grid place-content-center px-4 py-2 rounded-3xl w-fit mx-auto",
-                
-              )}
-            >
-              {(row.frazaReturn?.returnedWeight || 0) + (row.qsasaReturn?.returnedWeight || 0) + (row.returnStore?.returnedWeight || 0)}
-            </div>
-          </td>
-        )
-      },
-    },
     //    controll: {
     //        isCustomViewChildren: true,
     //        customViewChildren: (row, tag) => {
@@ -158,75 +128,9 @@ function OrderTable({
     //        }
     //    },
 
-    controll: {
-      isCustomViewChildren: true,
-      customViewChildren: (row, tag) => {
-        return (
-          <td
-            onClick={(e) => {
-              e.stopPropagation();
-            }}
-            className=" flex-1  relative  "
-          >
-            <div className="flex  justify-center items-center ">
-              <Controll
-                row={row}
-                tag={tag}
-                setRow={setRow}
-                setRowId={setRowId}
-                setSidebarOpen={setSidebarOpen}
-                clubId={clubId}
-                setIsModelTriggered={setIsModelTriggered}
-                setActionType={setActionType}
+   
 
-               
-              />
-            </div>
-          </td>
-        );
-      },
-    },
-    coach_id: {
-      hasImg: true,
-      imgValueKey: "coach_id.image",
-      customClassName: "flex flex-col gap-2 items-center justify-center p-4",
-    },
-
-    start_time: {
-      isCustomViewChildren: true,
-      customViewChildren: (row, tag) => {
-        const dateParts = splitDateTimeString(row[tag], lang);
-        return (
-          <td className="flex-1 p-4">
-            {dateParts.day} {dateParts.month} {dateParts.year} {dateParts.at}{" "}
-            {dateParts.time}
-          </td>
-        );
-      },
-    },
-
-    court_type: {
-      isCustomViewChildren: true,
-      customViewChildren: (row, tag) => {
-        return (
-          <td className=" flex-1 p-4   ">
-            {/* @ts-ignore */}
-            {options[row.court_id.court_type]}
-          </td>
-        );
-      },
-    },
-    gender: {
-      isCustomViewChildren: true,
-      customViewChildren: (row, tag) => {
-        return (
-          <td className=" flex-1  p-4  ">
-            {/* @ts-ignore */}
-            {options[row.gender.toLowerCase()]}
-          </td>
-        );
-      },
-    },
+   
   };
   const view = (row: any) => {
     console.log(window.location.pathname);
@@ -251,31 +155,10 @@ function OrderTable({
   }, [sidebarOpen]);
   return (
     <div className=" fixed-table customer-table printContainer ">
-      {sidebarOpen && (
-        <SideBar
-          setSidebarOpen={setSidebarOpen}
-          sidebarOpen={sidebarOpen}
-          headerImage={createIcon}
-          headerTitle={
-            actionType === "edit" || actionType === "add player"
-              ? shared.edit
-              : shared.create
-          }
-          sideBarMaxWidth={"max-w-[895px]"}
-        >
-          <OrderSidebar
-            type={actionType}
-            setOpenModal={setOpenModal}
-            selectedCalenderSlot={selectedCalenderSlot}
-            setSelectedCalenderSlot={setSelectedCalenderSlot}
-            tableId={rowId}
-            rowData={row}
-          />
-        </SideBar>
-      )}
+      
       <Table
         columnsData={columns}
-        rowData={data?.data?.orders}
+        rowData={data?.data?.materials}
         config={config}
         generalCellColumnClassName="  "
         generalCellRowClassName="  min-w-[150px] w- overflow-hidden text-center "
@@ -296,7 +179,8 @@ function OrderTable({
         }}
       />
     </div>
+      
   );
 }
 
-export default OrderTable;
+export default MaterialTable;

@@ -13,6 +13,7 @@ import OrderIcon from "../assets/icons/OrderIcon";
 import Users from "../pages/Users";
 import Roles from "../pages/Roles";
 import { Navigate } from "react-router-dom";
+import Material from "../pages/Material";
 
 
 const Loadable = ({ children }: { children: ReactNode }) => (
@@ -30,7 +31,7 @@ export const routes: RoutesConfig = [
   {
     path: "/",
     role: ["all"],
-    title: "orders",
+    title: "الطلبيات",
     tag:"Orders",
     isMainPage: true,
     icon: () => <ImageIcon Icon={OrderIcon} width={42} height={42} />,
@@ -43,7 +44,7 @@ export const routes: RoutesConfig = [
   {
     path: "/users",
     role: ["all"],
-    title: "users",
+    title: "المستخدمين",
     tag:"Users",
     isMainPage: true,
     icon: () => <ImageIcon Icon={ProfileIcon} width={42} height={42} />,
@@ -56,13 +57,26 @@ export const routes: RoutesConfig = [
    {
     path: "/roles",
     role: ["all"],
-    title: "roles",
+    title: "الصلاحيات",
     tag:"Roles",
     isMainPage: true,
     icon: () => <ImageIcon Icon={ClubAdminsIcon} width={42} height={42} />,
     element: (
       <Loadable>
         <Roles />
+      </Loadable>
+    ),
+  },
+  {
+    path: "/material",
+    role: ["all"],
+    title: "المواد",
+    tag:"Material",
+    isMainPage: true,
+    icon: () => <ImageIcon Icon={ClubAdminsIcon} width={42} height={42} />,
+    element: (
+      <Loadable>
+        <Material />
       </Loadable>
     ),
   },

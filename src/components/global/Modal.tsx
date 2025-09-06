@@ -39,10 +39,10 @@ const Modal = ({
             modalMaxWidth ? modalMaxWidth : "max-w-2xl"
           }`}
           onClick={(e) => {
-            console.log("test");
+            // console.log("test");
 
-            e.stopPropagation();
-            e.preventDefault();
+            // e.stopPropagation();
+            // e.preventDefault();
           }} // Stop click event propagation
         >
           {React.cloneElement(children as React.ReactElement, { onClose })}

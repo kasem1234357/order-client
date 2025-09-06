@@ -51,7 +51,7 @@ function Orders({}: Props) {
 
   const columns: coulmnsType = [
     {
-      title: 'Order Number',
+      title: 'رقم الطلب',
       tag: "orderNumber",
     },
     // {
@@ -70,32 +70,37 @@ function Orders({}: Props) {
     //   tag: "owner_price",
     // },
     {
-      title:'order Date',
-      tag: "createdAt",
-    },
-    {
-      title: 'created By',
+      title: 'اسم المنشأ',
       tag: "createdBy.userName",
     },
     {
-      title: 'price',
+      title: 'السعر',
       tag: "price",
     },
 
     {
-      title: 'client name',
+      title: 'اسم العميل',
       tag: "clientName",
     },
     {
-      title: 'invoice date',
+      title: 'تاريخ الفاتورة',
       tag: "invoiceDate",
     },
     {
-      title: 'Delivery Date',
+      title: 'تاريخ التسليم',
       tag: "deliveryDate",
     },
-    {
-      title: 'status',
+   
+     {
+      title: 'موافق عليه',
+      tag: "isApproved",
+    },
+     {
+      title: 'الوزن المرتجع',
+      tag: "returnedWeight",
+    },
+     {
+      title: 'الحالة',
       tag: "status",
     },
     {

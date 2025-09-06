@@ -68,6 +68,24 @@ function ClubsRolesContent({
             icon: route.icon,
           };
         }),
+          {
+        section: "Client",
+        read: true,
+        write: false,
+        delete: false,
+        create: false,
+        title: "المستخدمين",
+        icon: () => null,
+      },
+       {
+        section: "Storage",
+        read: true,
+        write: false,
+        delete: false,
+        create: false,
+        title: "المخازن",
+        icon: () => null,
+      },
     ],
   };
   const test = (data: any) => {
@@ -296,7 +314,7 @@ function ClubsRolesContent({
                     }}>
                       {field?.icon && field?.icon(28, 28)}
                       {/* @ts-ignore */}
-                      {navbar[field.title] || field.section}
+                      {navbar[field.title] || field.title}
                       {/* {field.section} */}
                     </td>
                     {/* @ts-ignore */}

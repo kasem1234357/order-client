@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import PrintIcon from "../../assets/icons/print.svg";
 import { useNavigate } from "react-router-dom";
-import { ImgIcon } from "../../utils/utils";
+import { ImgIcon, toastMessage } from "../../utils/utils";
 import { generateMenu } from "../../utils/MenuGenerator";
 import DropDownBox from "../custom/DropDownBox/DropDownBox";
 import creataIcon from "../../assets/icons/CREATE.svg";
@@ -37,10 +37,9 @@ import { useDebounce } from "../../hooks/useDebounce";
 import ExportButton from "../global/ExportButton";
 import { useViewport } from "../../hooks/useViewport";
 import { MOBILE_VIEW_ENDPOINT } from "../../constants";
-
-import { useGetAllOrdersQuery, useGetAllUsersQuery } from "../../lib/redux/services/Api";
 import PlusIcon from "../../assets/icons/PlusIcon";
-import UserSidebar from "./UserSidebar";
+
+import { useAddMaterialMutation, useGetAllMaterialQuery, useGetAllOrdersQuery } from "../../lib/redux/services/Api";
 
 type Props = {
   id: string | number;
@@ -76,12 +75,13 @@ function Header({
   }: DictionaryType = useGetDictionary();
   const [successModal, setSuccessModal] = useState(false);
   const [successModalProps, setSuccessModalProps] = useState<any>(null);
+  const [addMaterial]=useAddMaterialMutation()
   const [sidebarType, setSidebarType] = useState<
     "new" | "edit" | "add player" | "duplicate" | "view"
   >("new");
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
   const [matchType, setMatchType] = useState<"public" | "private">("public");
-  const { generateExcelFile } = useExport();
+  const { generateExcelFile,importExcelFile,importedExcelFile } = useExport();
   const clubId = useSelector((state: UserSliceType) => state.user.selectedClub);
 
   const Roles = useSelector(
@@ -105,18 +105,21 @@ function Header({
   const servicesConfig: FilterConfig = [
     {
       type: "number",
-      name: "order_number",
+      name: "orderNumber",
       label: 'order Number',
     },
     {
       type: "select",
-      name: "status",
-      label: inputs.status,
+      name: "stage",
+      label: "stage",
       options: [
-        { label: leagues_tournaments.draft, value: "Draft" },
-        { label: Academy.published, value: "published" },
-        { label: Academy.in_process, value: "in_process" },
-        { label: shared.canceled, value: "Canceled" },
+        { label: "Pending", value: "Created" },
+        { label: "Completed", value: "Completed" },
+      
+        {label:'في الفرز', value:"Fraza Delivered"},
+        {label:'في القص', value:"Qsasa Delivered"},
+        {label:'مرتجع', value:"Return Recorded"},
+        { label: "Cancelled", value: "Cancelled" },
       ],
     },
     {
@@ -124,12 +127,12 @@ function Header({
       name: "price",
       label: 'price',
     },
-    { type: "date", name: "order_date", label: "order date" },
-    { type: "date", name: "invoice_date", label: "invoice date" },
-    { type: "date", name: "delivery_date", label: "delivery date" },
+    { type: "date", name: "createdAt", label: "order date" },
+    { type: "date", name: "invoiceDate", label: "invoice date" },
+    { type: "date", name: "deliveryDate", label: "delivery date" },
     {
       type: "text",
-      name: "client_name",
+      name: "clientName",
       label: "Client Name",
     },
     {
@@ -187,9 +190,44 @@ function Header({
       },
     }
   );
+  const addMaterialFn = async(data:any)=>{
+    try {
+       await toast.promise(addMaterial({
+        data
+       }).unwrap,toastMessage())
+    } catch (error) {
+      
+    }
+  }
   useEffect(() => {
     setSelectedCalenderSlot(null);
   }, [sidebarOpen]);
+  useEffect(()=>{
+    const result:any = []
+    //@ts-ignore
+   if(importedExcelFile && importedExcelFile?.data){
+    console.log(importedExcelFile);
+    //@ts-ignore
+    importedExcelFile?.data?.forEach((item:any,index:number)=>{
+        result.push({
+          name:item['اسم المادة'],
+          invoiceNumber:item['رقم فاتورة الشراء'],
+          materialResourceType:item['نوع المادة'],
+          length:item['طول'],
+          width:item['عرض'],
+          gramage:item['جراماج'],
+          materialType:item['شكل المادة'],
+          storage:item['اسم المستودع'],
+          weight:item['الوزن']
+
+        })
+    })
+    console.log(result);
+    
+     addMaterialFn(result)
+   }
+  
+  },[importedExcelFile])
   const [startExporting, setStartExporting] = useState(false);
   const {
     data: privateCoachingData,
@@ -235,62 +273,73 @@ function Header({
       <div className="flex gap-4 items-center justify-between w-full overflow-x-auto customScroll py-2 mobile:flex-col-reverse mobile:items-start mobile:pt-0">
         <div className="mobile:flex mobile:justify-between mobile:items-center mobile:w-full">
           <h3 className="text-lg text-primary dark:text-white pl-3 font-bold">
-          All users
+            {coaches["coach_game_title"]}
           </h3>
           {sizeInfo.currentWidth < MOBILE_VIEW_ENDPOINT && (
             <div className="flex gap-1 items-center">
               <PrintButton />
-              <ExportButton
-                fileName={`users`}
-                getFunction={useGetAllUsersQuery}
-                getFunctionParams={{
-                  club_id: clubId,
-                  limit: 5000,
-                  name: search,
-                  ...filter,
-                }}
-              />
+             
             </div>
           )}
         </div>
 
         <div className="flex gap-4 items-center mobile:w-full">
           <div className="controll flex gap-2 items-center flex-2  mobile:w-full">
-           
+            {/* <div className="flex gap-2 items-center bg-[#F3F3F3] dark:bg-primaryLight p-1 rounded-md border border-main-1 mobile:w-full">
+              <ImageIcon Icon={SearchIcon} width={35} />
+              <input
+                type="text"
+                className="text-main-1 p-2 font-normal tracking-wider text-lg outline-none border-none bg-transparent focus:border-none focus:outline-none w-auto"
+                placeholder={shared.search}
+                onChange={(e) => {
+                  setSearch(e.target.value);
+                }}
+              />
+            </div> */}
             {!(sizeInfo.currentWidth < MOBILE_VIEW_ENDPOINT) && (
               <>
                 <PrintButton />
-                <ExportButton
-                  fileName={`users`}
-                  getFunction={useGetAllUsersQuery}
-                  getFunctionParams={{
-                    club_id: clubId,
-                    limit: 5000,
-                    name: search,
-                    ...filter,
-                  }}
-                />
+               
               </>
             )}
+
+            {/* <button
+              className="flex gap-2 items-center bg-[#F3F3F3] dark:bg-primaryLight p-2 rounded-md border border-main-1"
+              onClick={() => {
+                setOpenDropDown2((prev) => !prev);
+              }}
+            >
+              <ImageIcon Icon={FilterIcon} width={32} />
+            </button> */}
+            {/* {openDropDown2 && (
+              <DropDownBox
+                dropDownConfig={filterDropDown}
+                title=""
+                closeDropDown={closeDropDown2}
+                className="absolute top-[190px] ltr:right-[5px] dark:bg-primary rtl:left-[5px] z-50 w-fit"
+              />
+            )} */}
             {!(sizeInfo.currentWidth < MOBILE_VIEW_ENDPOINT) &&
                
                 <div>
-                  <button
+                   <input className="absolute top-0 left-0 w-0 h-0" name="excelFile" id="excelFile" type="file" accept=".xlsx" onChange={(e)=>{
+            importExcelFile(e)
+           }} placeholder="Upload Excel File"/>
+                  <label
+                  htmlFor="excelFile"
                     className="flex gap-2 items-center bg-primary dark:bg-primaryYellow dark:text-primary p-2 px-4 rounded-md border border-main-1 text-white"
                     onClick={() => {
                       setSidebarOpen(true);
                     }}
                   >
-                    {<CreateIcon />} {shared.create}
-                  </button>
+                    {<CreateIcon />} رفع ملف الاكسل
+                  </label>
                 </div>
               }
-            
-           
           </div>
         </div>
       </div>
-     {sizeInfo.currentWidth < MOBILE_VIEW_ENDPOINT &&
+      {sizeInfo.currentWidth < MOBILE_VIEW_ENDPOINT &&
         !sidebarOpen &&
        
           <div
@@ -302,23 +351,7 @@ function Header({
             <PlusIcon width={"30px"} height={"30px"} />
           </div>
         }
-      {sidebarOpen && (
-        <SideBar
-          setSidebarOpen={setSidebarOpen}
-          sidebarOpen={sidebarOpen}
-          headerImage={creataIcon}
-          headerTitle={shared.create}
-          sideBarMaxWidth={"max-w-[500px]"}
-        >
-          <UserSidebar
-            id={clubId}
-            type={sidebarType}
-
-          />
-        </SideBar>
-      )}
-
-      
+    
       {/* {successModal && (
         <Modal
           isOpen={successModal}

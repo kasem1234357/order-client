@@ -41,35 +41,70 @@ function OrderTable({
   const [row, setRow] = useState<any>({});
   const location = useLocation();
   const config: tableConfig = {
-     isActive: {
+     stage: {
           isCustomViewChildren: true,
           customViewChildren: (row, tag) => {
-          
+            const bookingsStatusStyle = [
+              {
+                name: "Draft",
+                bgColor: "bg-primary",
+                textColor: "text-[#CBDB2A]",
+                label: shared.draft,
+              },
+              {
+                name: "approved",
+                bgColor: "bg-[#1e1850]",
+                textColor: "text-[#CBDB2A]",
+                label: "مسؤول قبول الطلبات ",
+              },
+              {
+                name: "completed",
+                bgColor: "bg-[#34C759]",
+                textColor: "text-primary dark:text-white",
+                label: "مسؤول تسليم طلبات",
+              },
+              {
+                name: "fraza delivered",
+                bgColor: "bg-[#936639]",
+                textColor: "text-white dark:text-white",
+                label: ' مسؤول فرازة',
+              },
+              {
+                name: "qsasa delivered",
+                bgColor: "bg-[#9d4edd]",
+                textColor: "text-white dark:text-white",
+                label: ' مسؤول قصاصة',
+              },
+               {
+                name: "return recorded",
+                bgColor: "bg-[#e9c46a]",
+                textColor: "text-primary dark:text-white",
+                label: ' مسؤول مستودع رئيسي',
+              },
+              {
+                name: "created",
+                bgColor: "bg-secondary",
+                textColor: "text-primary dark:text-white",
+                label: "منشأ طلبات",
+              },
+            ];
+            console.log(row?.stage);
             
+            const bookingStatus = bookingsStatusStyle.find((e) => (e.name === row?.stage?.toLowerCase() ));
             return (
               <td className="flex-1 p-4  min-w-[150px] text-center">
                 <div
                   className={cn(
-                    "grid place-content-center px-4 py-2 rounded-3xl w-[100px] mx-auto",
-                    row[tag]
-                      ? "bg-[#34C759] text-primary dark:text-white"
-                      : "text-[#F3F3F3] bg-[#EF4626]"
+                    "grid place-content-center px-4 py-2 rounded-3xl w-fit mx-auto whitespace-nowrap",
+                    `${bookingStatus?.bgColor} ${bookingStatus?.textColor}`
                   )}
                 >
-                  {row[tag]? 'Active': "inActive"}
+                  {bookingStatus?.label || row[tag]}
                 </div>
               </td>
             );
           },
         },
-    //    controll: {
-    //        isCustomViewChildren: true,
-    //        customViewChildren: (row, tag) => {
-
-    //                return <BookingControll row={row} tag={tag} setRow={setRow} setSidebarOpen={setSidebarOpen}  clubId={clubId} setActionType = {setActionType} setIsModelTriggered={setIsModelTriggered} />
-
-    //        }
-    //    },
 
     controll: {
       isCustomViewChildren: true,

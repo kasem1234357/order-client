@@ -93,8 +93,6 @@ function Header({
     setMatchType(props.matchType);
   };
   const dropDownRef2 = useRef<HTMLButtonElement>(null);
-  const club_id = useSelector((state: any) => state.user.selectedClub);
-  const { data: courts } = useGetAllCourtsByNameQuery({ club_id: club_id });
   const [openDropDown2, setOpenDropDown2] = useState<boolean>(false);
   const closeDropDown2 = () => {
     setOpenDropDown2(false);
@@ -354,18 +352,7 @@ function Header({
           />
         </SideBar>
       )}
-      {/* {successModal && (
-        <Modal
-          isOpen={successModal}
-          onClose={() => setSuccessModal(false)}
-          modalMaxWidth="max-w-[400px]"
-        >
-          <SuccessModel
-            {...successModalProps}
-            onClose={() => setSuccessModal(false)}
-          />
-        </Modal>
-      )} */}
+
     </div>
   );
 }

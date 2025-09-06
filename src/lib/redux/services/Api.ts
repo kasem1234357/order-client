@@ -58,12 +58,13 @@ export const Api = createApi({
     "notifications",
     "report",
     "single-booking",
-    "orders"
+    "orders",
+    "material"
   ],
   endpoints: (builder) => ({
     createOrder:builder.mutation({
-       query: (data) => ({
-        url: `/api/orders`,
+       query: ({data,materialId}) => ({
+        url: `/api/orders?materialId=${materialId}`,
         method: "POST",
         body: data,
         headers: {
@@ -83,11 +84,79 @@ export const Api = createApi({
       }),
       invalidatesTags:['orders']
     }),
+    getAllStorage:builder.query({
+      query: () =>
+        `/api/storage`,
+      providesTags:['storage']
+      
+    }),
+    addStorage:builder.mutation({
+       query: ({data}) => ({
+        url: `/api/storage`,
+        method: "POST",
+        body: data,
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+        },
+      }),
+      invalidatesTags:['storage']
+    }),
+     addMaterial:builder.mutation({
+       query: ({data}) => ({
+        url: `/api/material`,
+        method: "POST",
+        body: {data},
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+        },
+      }),
+      invalidatesTags:['material']
+    }),
+    getAllMaterial:builder.query({
+      query: ({width='',length='',gramage='',materialResourceType='', materialType='',storage='' }) =>
+        `/api/material?width=${''}&length=${''}&gramage=${''}&materialResourceType=${materialResourceType}&materialType=${materialType}&storage=${storage}`,
+      providesTags:['material']
+      
+    }),
+     getAllMaterialSize:builder.query({
+      query: ({material='gramage',width='',length='',gramage=''}) =>
+        `/api/material/materialType?material=${material}&width=${width}&length=${length}&gramage=${gramage}`,
+      providesTags:['material']
+      
+    }),
+    getAllClient:builder.query({
+      query: () =>
+        `/api/client`,
+      providesTags:['client']
+      
+    }),
+    addClient:builder.mutation({
+       query: ({data}) => ({
+        url: `/api/client`,
+        method: "POST",
+        body: data,
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+        },
+      }),
+      invalidatesTags:['client']
+    }),
     updateOrderStage:builder.mutation({
-       query: ({id,stage,weight,date}) => ({
+       query: ({id,stage,weight,date,finalWeight,numberOfBoxes,returnedWeight}) => ({
+        url: `/api/orders/stage/change/${id}`,
+        method: "PUT",
+        body: {stageName:stage,weight,date,finalWeight,numberOfBoxes,returnedWeight},
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+        },
+      }),
+      invalidatesTags:['orders']
+    }),
+    approveOrderStage:builder.mutation({
+       query: ({id,stage,weight,date,finalWeight,numberOfBoxes}) => ({
         url: `/api/orders/stage/${id}`,
         method: "PUT",
-        body: {stageName:stage,weight,date},
+        body: {stageName:stage,weight,date,finalWeight,numberOfBoxes},
         headers: {
           "Content-type": "application/json; charset=UTF-8",
         },
@@ -203,6 +272,15 @@ export const Api = createApi({
         currentPage = 1,
       }) =>
         `/api/roles`,
+      providesTags: ["Club"],
+    }),
+     getAllRolesNames: builder.query({
+      query: ({
+        
+        limit = 20,
+        currentPage = 1,
+      }) =>
+        `/api/roles/names`,
       providesTags: ["Club"],
     }),
     getRoleById: builder.query({
@@ -982,5 +1060,14 @@ export const {
   useCancelOrderMutation,
   useCreateInviteCodeMutation,
   useGetAllUsersQuery,
-  useGetOrderHistoryQuery
+  useGetOrderHistoryQuery,
+  useGetAllStorageQuery,
+  useAddStorageMutation,
+  useAddClientMutation,
+  useGetAllClientQuery,
+  useAddMaterialMutation,
+  useGetAllMaterialQuery,
+  useGetAllMaterialSizeQuery,
+  useGetAllRolesNamesQuery,
+  useApproveOrderStageMutation
 } = Api;

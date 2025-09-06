@@ -1,23 +1,18 @@
-import React, { useState } from "react";
+import React, { useState } from 'react'
+import { useGetDictionary } from '../hooks/useGetDictionary';
+import { coulmnsType, DictionaryType } from '../types';
+import { useSearchParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { UserSliceType } from '../lib/redux/slices/userSlice';
+import { useGetAllClubRolesQuery, useGetAllMaterialQuery } from '../lib/redux/services/Api';
+import { useDebounce } from '../hooks/useDebounce';
+import RowsPerPageSelect from '../components/global/RowsPerPageSelect';
+import Pagination from '../components/global/Pagination';
+import Header from '../components/material/Header';
+import MaterialTable from '../components/material/MaterialTable';
+import SkeletonTable from '../components/skeletons/SkeletonTable';
 
-import { coulmnsType, DictionaryType } from "../types";
-import { useGetDictionary } from "../hooks/useGetDictionary";
-import { useSearchParams } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { UserSliceType } from "../lib/redux/slices/userSlice";
-import { useGetAllPrivateCoachesQuery } from "../lib/redux/services/sections/Coaches";
-import { useDebounce } from "../hooks/useDebounce";
-import SkeletonTable from "../components/skeletons/SkeletonTable";
-
-import Pagination from "../components/global/Pagination";
-import RowsPerPageSelect from "../components/global/RowsPerPageSelect";
-import Header from "../components/users/Header";
-import UsersTable from "../components/users/UsersTable";
-import { useGetAllOrdersQuery, useGetAllUsersQuery } from "../lib/redux/services/Api";
-// import PrivateCoachingTable from "../../components/coaches/privateCoaching/PrivateCoachingTable";
-
-
-type Props = {};
+type Props = {}
 const renderTable = (props: any) => {
   if (props.isLoading || props.isFetching) {
     return <SkeletonTable />;
@@ -27,7 +22,7 @@ const renderTable = (props: any) => {
   //   return <div>error</div>;
   // }
   return (
-    <UsersTable
+    <MaterialTable
       data={props.data}
       columns={props.columns}
       clubId={props.clubId}
@@ -36,8 +31,8 @@ const renderTable = (props: any) => {
     />
   );
 };
-function Users({}: Props) {
-  const { Auth, inputs, courts, shared, coaches }: DictionaryType =
+function Material({}: Props) {
+const { Auth, inputs, courts, shared, coaches }: DictionaryType =
     useGetDictionary();
   const [currentPage, setCurrentPage] = useState(1);
   const [limitedFields, setLimitedFields] = useState<string[]>([]);
@@ -51,10 +46,9 @@ function Users({}: Props) {
 
   const columns: coulmnsType = [
     {
-      title: 'user name',
+      title: 'اسم المادة',
       tag: "name",
     },
-
     // {
     //   title:
     //   coaches["coaches_table"]["Players"],
@@ -71,21 +65,37 @@ function Users({}: Props) {
     //   tag: "owner_price",
     // },
     {
-      title:'role',
-      tag: "role",
-    },
-     {
-      title:'stage',
-      tag: "stage",
-    },
-     {
-      title:'storage',
-      tag: "storage",
+      title:'رقم فاتورة الشراء',
+      tag: "invoiceNumber",
     },
     {
-      title: 'created At',
-      tag: "createdAt",
+      title: 'مصدر المادة',
+      tag: "materialResourceType",
     },
+    {
+      title: 'جراماج',
+      tag: "gramage",
+    },
+     {
+      title: 'الطول',
+      tag: "length",
+    },
+     {
+      title: 'العرض',
+      tag: "width",
+    },
+     {
+      title: 'الوزن',
+      tag: "weight",
+    },
+    {
+      title: 'نوع المواد',
+      tag: "materialType",
+    },
+    {
+      title:"اسم المستودع",
+      tag:"storage"
+    }
   ];
   const [searchParams] = useSearchParams();
   const [search, setSearch] = useState("");
@@ -93,7 +103,7 @@ function Users({}: Props) {
     (state: { user: UserSliceType }) => state.user.selectedClub
   );
   const { data, isLoading, isError, error, refetch, isFetching } =
-    useGetAllUsersQuery({
+    useGetAllMaterialQuery({
      
       name: useDebounce(search),
       limit: limit,
@@ -103,7 +113,7 @@ function Users({}: Props) {
   return (
     <section className="w-full flex flex-col gap-4 overflow-hidden min-h-[600px]">
       <Header
-        data={data?.users}
+        data={data?.materials}
         id={clubId}
         setSearch={setSearch}
         setFilter={setFilter}
@@ -133,7 +143,7 @@ function Users({}: Props) {
           options={[10, 25, 50, 100]}
           value={limit}
           onChange={handleRowsChange}
-          total={data?.data?.totalPages}
+          total={data?.total}
         />
 
         <div className="w-full flex justify-end items-end">
@@ -151,5 +161,5 @@ function Users({}: Props) {
   );
 }
 
-export default Users;
 
+export default Material

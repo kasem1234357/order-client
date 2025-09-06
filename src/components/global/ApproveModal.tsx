@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useActivateCoacheMutation } from "../../lib/redux/services/sections/Coaches";
 import { toast } from "react-toastify";
 import {
@@ -14,15 +14,15 @@ import { useDeleteBookingMutation } from "../../lib/redux/services/sections/Book
 import { Tooltip } from "react-tooltip";
 import { Info } from "lucide-react";
 import CheckBox from "./CheckBox";
-import { useCancelOrderMutation, useGetAllStorageQuery, useUpdateOrderStageMutation } from "../../lib/redux/services/Api";
+import { useApproveOrderStageMutation, useCancelOrderMutation, useUpdateOrderStageMutation } from "../../lib/redux/services/Api";
 import { Controller, useForm } from "react-hook-form";
 import DateInput from "./DateInput";
 import ValidateError from "./ValidateError";
 import Input from "./Input";
-import SelectBox from "./SelectBox";
 
 type propsType = {
   toggleModal?: () => void;
+  orderInfo:any
   orderId: number;
   label:string
   stage?: string;
@@ -33,12 +33,12 @@ type propsType = {
 type OrderFormType ={
     weight:number;
     date:string;
-    returnWeight:number;
-    storage:string
+    returnWeight:string;
 }
-const StageModal = ({
+const ApproveModal = ({
   toggleModal,
   orderId,
+  orderInfo,
   label,
   cancellationHours,
   stage,
@@ -47,30 +47,84 @@ const StageModal = ({
 }: propsType) => {
   const [apiAction] = useUpdateOrderStageMutation();
   const [withReccuring, setIsWithRecurring] = useState(false);
+    const [aproveStage] = useApproveOrderStageMutation();
   const { inputs, coaches, shared, events }: DictionaryType =
     useGetDictionary();
-  const apiActionHandler = async (data: any) => {
-    try {
-      await toast.promise(
-        apiAction({        
-          id:orderId,
-          stage:stage,
-        weight:data?.weight,
-        date:data?.date,
-        returnedWeight:data?.returnWeight,
-        storage:data?.storage
-
-        }).unwrap(),
-        toastMessage()
-      );
-      toggleModal && toggleModal();
-    } catch (error) {}
-  };
+  const apiActionHandler = async () => {
+        try {
+          if (orderInfo?.stage?.name !== "Created" && orderInfo.isApproved) {
+            if (orderInfo?.stage?.name === "Cancelled") {
+              toast.warn('لا يمكنك الموافقة على طلب تم الغاءه سابقا')
+              return;
+            } else {
+              toast.warn("لا يمكنك الموافقة على طلب تمت الموافقة عليه سابقا ");
+              return;
+            }
+          }
+          await toast.promise(
+            aproveStage({ id: orderInfo._id, stage: orderInfo?.stage?.name }).unwrap(),
+            toastMessage()
+          );
+        } catch (error) {
+          console.log(error);
+        }
+      }
+       const disableInfo = ()=>{
+        switch (orderInfo?.stage?.name) {
+            case 'Created':
+               return {
+                date:orderInfo?.date,
+                weight:orderInfo?.weight
+               }
+                
+                break;
+                case 'Approved':
+                   return {
+                date:orderInfo?.date,
+                weight:orderInfo?.weight
+               }
+                break;
+                 case 'Fraza Delivered':
+                   return {
+                date:orderInfo?.frazaDelivery?.deliveryDate,
+                weight:orderInfo?.frazaDelivery?.deliveredWeight
+               }
+                
+                break;
+                 case 'Qsasa Delivered':
+                    return {
+                date:orderInfo?.qsasaDelivery?.deliveryDate,
+                weight:orderInfo?.qsasaDelivery?.deliveredWeight
+               }
+                   
+                break;
+                 case 'Return Recorded':
+                     return {
+                date:orderInfo?.returnStore?.returnDate,
+                weight:orderInfo?.returnStore?.returnedWeight
+               }
+                 
+                break;
+                                 case 'Completed':
+                     return {
+                date:orderInfo?.deliveryDate,
+                weight:orderInfo?.finalWeight
+               }
+                 
+                break;
+        
+            default:
+                break;
+        }
+    }
+    console.log(orderInfo);
+    
+    console.log(disableInfo());
+    
   const defaultData = {
     weight:0,
     date:'',
     returnWeight:0,
-    storage:''
   }
     const {
       control,
@@ -78,17 +132,19 @@ const StageModal = ({
       reset,
       setValue,
       trigger,
-      watch,
       formState: { errors },
     } = useForm<OrderFormType>({
       //@ts-ignore
       
-      defaultValues: defaultData,
+      defaultValues: disableInfo(),
     });
+   
   const onSubmit =async(data:any)=>{
-    await apiActionHandler(data);
+    await apiActionHandler();
   }
-  const returnWeight = watch('returnWeight')
+  useEffect(()=>{
+   disableInfo()
+  },[])
   return (
     <div className="flex flex-col gap-8 px-12 py-8 pt-10 ">
       <div className="flex flex-col justify-center items-center gap-2 text-center ">
@@ -100,7 +156,7 @@ const StageModal = ({
           <p
             className={`text-lg font-normal  text-[#1E1850] dark:text-white break-words leading-relaxed whitespace-pre-wrap `}
           >
-            هل تريد حقا اكمال العملية
+           هل تأكد استلامك لهذه التفاصيل
           </p>
         </div>
         <form className="flex gap-2 flex-col w-full" onSubmit={handleSubmit(onSubmit)}>
@@ -109,7 +165,7 @@ const StageModal = ({
                    <Controller
           name="date"
           control={control}
-          render={({ field }) => <DateInput name="invoiceDate" title=" تاريخ التسليم" ar={false} dateInputProps={{ ...field }}
+          render={({ field }) => <DateInput isDisabled={true} name="invoiceDate" title=" تاريخ التسليم" ar={false} dateInputProps={{ ...field }}
           placeHolder="date" handleChangeEvent={(e) => {
                       setValue("date", e.replace("Sept", "Sep"));
                    
@@ -133,6 +189,7 @@ const StageModal = ({
                                       inputProps={{
                                         ...field,
                                         type: "number",
+                                        readOnly:true,
                                         onWheel: (e) => {
                                           e.preventDefault();
                                           //@ts-ignore
@@ -157,85 +214,8 @@ const StageModal = ({
                               </div>
                             </div>
                              <div className="flex flex-1 gap-2">
-                              <div className="w-full">
-                                <Controller
-                                  name="returnWeight"
-                                  rules={{ required: true }}
-                                  control={control}
-                                  render={({ field }) => (
-                                    <Input
-                                      inputProps={{
-                                        ...field,
-                                        type: "number",
-                                        onWheel: (e) => {
-                                          e.preventDefault();
-                                          //@ts-ignore
-                                          e.target.blur();
-                                        },
-                                      //   readOnly: type !== "new" && type !== "duplicate",
-                                      //   disabled: type !== "new" && type !== "duplicate",
-                                      }}
-                                      label={' مرتجع'}
-                                      title="Kg"
-                                      // customClass={
-                                      //   type !== "new" && type !== "duplicate"
-                                      //     ? "bg-[#f3f3f3]"
-                                      //     : ""
-                                      // }
-                                     
-                                    />
-                                  )}
-                                />
-                                {errors.returnWeight &&
-                                  errors.returnWeight.type === "required" && <ValidateError />}
-                              </div>
+                             
                             </div>
-                            {returnWeight > 0 && <div className="flex flex-1 gap-2">
-                                             <div className="w-full flex-1 mobile:min-w-[300px]">
-                                              <label className="block text-sm mb-2 text-primary dark:text-white">
-                                                 مرتجع الى
-                                               
-                                              </label>
-                                              <Controller
-                                                name={`storage`}
-                                                control={control}
-                                                rules={{ required: false }}
-                                                render={({ field }) => (
-                                                  <SelectBox
-                                                    field={field}
-                                                     isCustomOption={true}
-                                                    setValue={setValue}
-                                                    HasMenu={true}
-                                                    menuActionProps={{
-                                                      hasAddPlayerBtn:true,
-                                                      addLabel:'اضافة مخزن جديد',
-                                                      onClick:()=>{
-                                                         
-                                                      }
-                                                    }}
-                                                    labelKey="storage"
-                                                    optionValueKey="storage"
-                                                    
-                                                    requestFn={useGetAllStorageQuery}
-                                                    
-                                                    
-                                                    
-                                                    name={`storage`}
-                                                    onChange={(selected: {
-                                                      id: number;
-                                                      name: string;
-                                                      price: number;
-                                                    }) => {
-                                                      
-                                                      // @ts-ignore only
-                                                      return field.onChange(selected ? selected.storage : null);
-                                                    }}
-                                                  />
-                                                )}
-                                              />
-                                            </div>
-                                         
-                                          </div>}
                             <div
           className={`mt-6 flex flex-col items-center justify-center gap-6  w-full `}
         >
@@ -250,7 +230,7 @@ const StageModal = ({
                   type="submit"
                   text={
                     <p className="flex flex-row gap-1  items-center justify-center w-full ">
-                      <p>اكمال العملية</p>
+                      <p> تأكيد الطلب</p>
                     </p>
                   }
                   width="max-w-[400px] w-full"
@@ -290,4 +270,4 @@ const StageModal = ({
   );
 };
 
-export default StageModal;
+export default ApproveModal;

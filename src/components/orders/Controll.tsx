@@ -5,6 +5,7 @@ import useOutsideClick from "../../hooks/useOutsideClick";
 import {
   useActivateUserMutation,
   useActivationRoleMutation,
+  useApproveOrderStageMutation,
   useUpdateOrderStageMutation,
 } from "../../lib/redux/services/Api";
 import { generateMenu } from "../../utils/MenuGenerator";
@@ -23,6 +24,8 @@ import MenuIcon from "../../assets/icons/MenuIcon";
 import CancelModal from "../global/CancelModal";
 import StageModal from "../global/StageModal";
 import EditIcon from "../../assets/icons/EditIcon";
+import CompleteModal from "../global/ComplateModal";
+import ApproveModal from "../global/ApproveModal";
 const Controll = ({
   row,
   tag,
@@ -51,6 +54,7 @@ const Controll = ({
     setIsModelTriggered(false);
   });
   const [updateStage] = useUpdateOrderStageMutation();
+
   const refactorMenu = (menu:any)=>{
     if(row.status === 'Cancelled'){
       return menu.filter((item:any) =>item.eventType !== 'write')
@@ -70,29 +74,29 @@ const Controll = ({
         setOpenModel(false);
       },
     },
-    approved: {
-      cb: async () => {
-        try {
-          if (row?.stage?.name !== "Created") {
-            if (row?.stage?.name === "Cancelled") {
-              toast.warn('لا يمكنك الموافقة على طلب تم الغاءه سابقا')
-              return;
-            } else {
-              toast.warn("لا يمكنك الموافقة على طلب تمت الموافقة عليه سابقا ");
-              return;
-            }
-          }
-          await toast.promise(
-            updateStage({ id: row._id, stage: "Approved" }).unwrap(),
-            toastMessage()
-          );
-        } catch (error) {
-          console.log(error);
-        }
-      },
-      params: {},
-      isAsync: true,
-    },
+    // approved: {
+    //   cb: async () => {
+    //     try {
+    //       if (row?.stage?.name !== "Created" && row.isApproved) {
+    //         if (row?.stage?.name === "Cancelled") {
+    //           toast.warn('لا يمكنك الموافقة على طلب تم الغاءه سابقا')
+    //           return;
+    //         } else {
+    //           toast.warn("لا يمكنك الموافقة على طلب تمت الموافقة عليه سابقا ");
+    //           return;
+    //         }
+    //       }
+    //       await toast.promise(
+    //         aproveStage({ id: row._id, stage: row?.stage?.name }).unwrap(),
+    //         toastMessage()
+    //       );
+    //     } catch (error) {
+    //       console.log(error);
+    //     }
+    //   },
+    //   params: {},
+    //   isAsync: true,
+    // },
     delete: {
       isAsync: true,
       params: {},
@@ -107,26 +111,26 @@ const Controll = ({
         // }
       },
     },
-    complete: {
-      cb: async () => {
-        try {
+    // complete: {
+    //   cb: async () => {
+    //     try {
          
-            if (row?.stage?.name === "Cancelled") {
-              toast.warn('لا يمكنك انهاء طلب تم الغاءه سابقا')
-              return;
-            } 
+    //         if (row?.stage?.name === "Cancelled") {
+    //           toast.warn('لا يمكنك انهاء طلب تم الغاءه سابقا')
+    //           return;
+    //         } 
           
-          await toast.promise(
-            updateStage({ id: row._id, stage: "Completed" }).unwrap(),
-            toastMessage()
-          );
-        } catch (error) {
-          console.log(error);
-        }
-      },
-      params: {},
-      isAsync: true,
-    },
+    //       await toast.promise(
+    //         updateStage({ id: row._id, stage: "Completed" }).unwrap(),
+    //         toastMessage()
+    //       );
+    //     } catch (error) {
+    //       console.log(error);
+    //     }
+    //   },s
+    //   params: {},
+    //   isAsync: true,
+    // },
   },{
     cancel: {
             component: () => {
@@ -248,6 +252,67 @@ const Controll = ({
               );
             },
           },
+    approved:{
+       component: () => {
+              return (
+                <div className="hover:bg-gray-100 dark:bg-primary dark:hover:bg-primaryLight w-full flex items-center px-2 rounded-md  py-1 ">
+                  <ModalButton
+                    buttonContent={
+                      <div className=" w-full ">
+                        <label className="flex flex-row gap-1 items-center justify-center w-full py-1 cursor-pointer">
+                          <EditIcon/>
+
+                          <p className={` text-sm  `}>
+                             تأكيد العملية والموافقة عليها
+                          </p>
+                        </label>
+                      </div>
+                    }
+                    modalContent={
+                      <ApproveModal
+                         orderInfo={row}
+                         orderId={row._id}
+                         stage={'Approved'}
+                         label="  تأكيد العملية"
+                       
+                      />
+                    }
+                    modalMaxWidth="max-w-lg "
+                  />
+                </div>
+              );
+            },
+    }   ,
+          complete:{
+             component: () => {
+              return (
+                <div className="hover:bg-gray-100 dark:bg-primary dark:hover:bg-primaryLight w-full flex items-center px-2 rounded-md  py-1 ">
+                  <ModalButton
+                    buttonContent={
+                      <div className=" w-full ">
+                        <label className="flex flex-row gap-1 items-center justify-center w-full py-1 cursor-pointer">
+                          <EditIcon/>
+
+                          <p className={` text-sm  `}>
+                           انهاء الطلب
+                          </p>
+                        </label>
+                      </div>
+                    }
+                    modalContent={
+                      <CompleteModal
+                         orderId={row._id}
+                         stage={'Completed'}
+                         label="انهاء الطلب"
+                       
+                      />
+                    }
+                    modalMaxWidth="max-w-lg "
+                  />
+                </div>
+              );
+            },
+          }
           
   });
   return (

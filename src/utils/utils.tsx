@@ -195,9 +195,10 @@ export const convertTo12HourFormat = (time: string) => {
 
 export const convertToBase64 = async (imageUrls: string[]) => {
   const base64Images = await Promise.all(
-    imageUrls.map(async (image) => {
+    imageUrls.map(async (image) => { 
       if (image.startsWith("data:image")) {
         // Already a Base64 string
+        
         return image;
       } else {
         // Fetch the image and convert it to Base64

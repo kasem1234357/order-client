@@ -79,13 +79,13 @@ const SideBar = ({
       >
         <div  className="h-dvh overflow-y-auto customScroll ">
           <div className="bg-primary dark:bg-primaryLight h-[51px] px-3 flex justify-between items-center">
-            <div className="text-white flex flex-row gap-1 items-center justify-center">
+            <div className="text-white flex flex-row gap-1 items-center justify-center print:hidden">
               <img loading="lazy" className="w-10" src={headerImage} alt="Header" />
               <h2 className="text-white pt-4 text-lg">{headerTitle}</h2>
             </div>
             <button
               onClick={DiscardChangesModalHandler}
-              className="text-xl text-white transition duration-300"
+              className="text-xl text-white transition duration-300 print:hidden"
             >
               <img loading="lazy" src={close} alt="Close" />
             </button>

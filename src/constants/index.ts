@@ -397,7 +397,7 @@ export const currentPremission2 = [
   }
 ]
 export const CURRENCY = () => {
-  const currency = localStorage.getItem("currency") || "SY";
+  const currency = localStorage.getItem("currency") || "USD";
   return currency;
 };
 export const MOBILE_VIEW_ENDPOINT = 700

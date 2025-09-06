@@ -14,35 +14,31 @@ import { useDeleteBookingMutation } from "../../lib/redux/services/sections/Book
 import { Tooltip } from "react-tooltip";
 import { Info } from "lucide-react";
 import CheckBox from "./CheckBox";
-import { useCancelOrderMutation, useGetAllStorageQuery, useUpdateOrderStageMutation } from "../../lib/redux/services/Api";
+import { useCancelOrderMutation, useUpdateOrderStageMutation } from "../../lib/redux/services/Api";
 import { Controller, useForm } from "react-hook-form";
 import DateInput from "./DateInput";
 import ValidateError from "./ValidateError";
 import Input from "./Input";
-import SelectBox from "./SelectBox";
 
 type propsType = {
   toggleModal?: () => void;
   orderId: number;
   label:string
   stage?: string;
-  cancellationHours?: number;
+
 
   created_from?: "dashboard" | "mobile";
 };
 type OrderFormType ={
-    weight:number;
-    date:string;
-    returnWeight:number;
-    storage:string
+    finalWeight:number;
+    numberOfBoxes:number
 }
-const StageModal = ({
+const CompleteModal = ({
   toggleModal,
   orderId,
   label,
-  cancellationHours,
+
   stage,
-  created_from = "dashboard",
 
 }: propsType) => {
   const [apiAction] = useUpdateOrderStageMutation();
@@ -50,15 +46,17 @@ const StageModal = ({
   const { inputs, coaches, shared, events }: DictionaryType =
     useGetDictionary();
   const apiActionHandler = async (data: any) => {
+    if(data.finalWeight === 0 && data.numberOfBoxes === 0){
+        toast.error('يجب ادخال بيانات باحد الحقلين ')
+        return
+    }
     try {
       await toast.promise(
         apiAction({        
           id:orderId,
           stage:stage,
-        weight:data?.weight,
-        date:data?.date,
-        returnedWeight:data?.returnWeight,
-        storage:data?.storage
+        finalWeight:data?.finalWeight,
+        numberOfBoxes:data?.numberOfBoxes
 
         }).unwrap(),
         toastMessage()
@@ -67,10 +65,8 @@ const StageModal = ({
     } catch (error) {}
   };
   const defaultData = {
-    weight:0,
-    date:'',
-    returnWeight:0,
-    storage:''
+    finalWeight:0,
+    numberOfBoxes:0
   }
     const {
       control,
@@ -78,7 +74,6 @@ const StageModal = ({
       reset,
       setValue,
       trigger,
-      watch,
       formState: { errors },
     } = useForm<OrderFormType>({
       //@ts-ignore
@@ -88,7 +83,6 @@ const StageModal = ({
   const onSubmit =async(data:any)=>{
     await apiActionHandler(data);
   }
-  const returnWeight = watch('returnWeight')
   return (
     <div className="flex flex-col gap-8 px-12 py-8 pt-10 ">
       <div className="flex flex-col justify-center items-center gap-2 text-center ">
@@ -105,28 +99,44 @@ const StageModal = ({
         </div>
         <form className="flex gap-2 flex-col w-full" onSubmit={handleSubmit(onSubmit)}>
              <div className="flex flex-1 gap-2">
-                <div className="w-full ltr">
-                   <Controller
-          name="date"
-          control={control}
-          render={({ field }) => <DateInput name="invoiceDate" title=" تاريخ التسليم" ar={false} dateInputProps={{ ...field }}
-          placeHolder="date" handleChangeEvent={(e) => {
-                      setValue("date", e.replace("Sept", "Sep"));
-                   
-
-                      
-                      trigger("date");
-                    }}/>}
-        />
-                  {errors.date &&
-                    errors.date.type === "required" && <ValidateError />}
-                </div>
+               <div className="w-full">
+                                <Controller
+                                  name="numberOfBoxes"
+                                 
+                                  control={control}
+                                  render={({ field }) => (
+                                    <Input
+                                      inputProps={{
+                                        ...field,
+                                        type: "number",
+                                        onWheel: (e) => {
+                                          e.preventDefault();
+                                          //@ts-ignore
+                                          e.target.blur();
+                                        },
+                                      //   readOnly: type !== "new" && type !== "duplicate",
+                                      //   disabled: type !== "new" && type !== "duplicate",
+                                      }}
+                                      label={'عدد الاطباق النهائي'}
+                                      title="طبق"
+                                      // customClass={
+                                      //   type !== "new" && type !== "duplicate"
+                                      //     ? "bg-[#f3f3f3]"
+                                      //     : ""
+                                      // }
+                                     
+                                    />
+                                  )}
+                                />
+                                {errors.numberOfBoxes &&
+                                  errors.numberOfBoxes.type === "required" && <ValidateError />}
+                              </div>
               </div>
                <div className="flex flex-1 gap-2">
                               <div className="w-full">
                                 <Controller
-                                  name="weight"
-                                  rules={{ required: true }}
+                                  name="finalWeight"
+                                  
                                   control={control}
                                   render={({ field }) => (
                                     <Input
@@ -141,7 +151,7 @@ const StageModal = ({
                                       //   readOnly: type !== "new" && type !== "duplicate",
                                       //   disabled: type !== "new" && type !== "duplicate",
                                       }}
-                                      label={'الوزن المسلم'}
+                                      label={'الوزن النهائي'}
                                       title="Kg"
                                       // customClass={
                                       //   type !== "new" && type !== "duplicate"
@@ -152,90 +162,10 @@ const StageModal = ({
                                     />
                                   )}
                                 />
-                                {errors.weight &&
-                                  errors.weight.type === "required" && <ValidateError />}
+                                {errors.finalWeight &&
+                                  errors.finalWeight.type === "required" && <ValidateError />}
                               </div>
                             </div>
-                             <div className="flex flex-1 gap-2">
-                              <div className="w-full">
-                                <Controller
-                                  name="returnWeight"
-                                  rules={{ required: true }}
-                                  control={control}
-                                  render={({ field }) => (
-                                    <Input
-                                      inputProps={{
-                                        ...field,
-                                        type: "number",
-                                        onWheel: (e) => {
-                                          e.preventDefault();
-                                          //@ts-ignore
-                                          e.target.blur();
-                                        },
-                                      //   readOnly: type !== "new" && type !== "duplicate",
-                                      //   disabled: type !== "new" && type !== "duplicate",
-                                      }}
-                                      label={' مرتجع'}
-                                      title="Kg"
-                                      // customClass={
-                                      //   type !== "new" && type !== "duplicate"
-                                      //     ? "bg-[#f3f3f3]"
-                                      //     : ""
-                                      // }
-                                     
-                                    />
-                                  )}
-                                />
-                                {errors.returnWeight &&
-                                  errors.returnWeight.type === "required" && <ValidateError />}
-                              </div>
-                            </div>
-                            {returnWeight > 0 && <div className="flex flex-1 gap-2">
-                                             <div className="w-full flex-1 mobile:min-w-[300px]">
-                                              <label className="block text-sm mb-2 text-primary dark:text-white">
-                                                 مرتجع الى
-                                               
-                                              </label>
-                                              <Controller
-                                                name={`storage`}
-                                                control={control}
-                                                rules={{ required: false }}
-                                                render={({ field }) => (
-                                                  <SelectBox
-                                                    field={field}
-                                                     isCustomOption={true}
-                                                    setValue={setValue}
-                                                    HasMenu={true}
-                                                    menuActionProps={{
-                                                      hasAddPlayerBtn:true,
-                                                      addLabel:'اضافة مخزن جديد',
-                                                      onClick:()=>{
-                                                         
-                                                      }
-                                                    }}
-                                                    labelKey="storage"
-                                                    optionValueKey="storage"
-                                                    
-                                                    requestFn={useGetAllStorageQuery}
-                                                    
-                                                    
-                                                    
-                                                    name={`storage`}
-                                                    onChange={(selected: {
-                                                      id: number;
-                                                      name: string;
-                                                      price: number;
-                                                    }) => {
-                                                      
-                                                      // @ts-ignore only
-                                                      return field.onChange(selected ? selected.storage : null);
-                                                    }}
-                                                  />
-                                                )}
-                                              />
-                                            </div>
-                                         
-                                          </div>}
                             <div
           className={`mt-6 flex flex-col items-center justify-center gap-6  w-full `}
         >
@@ -290,4 +220,4 @@ const StageModal = ({
   );
 };
 
-export default StageModal;
+export default CompleteModal;

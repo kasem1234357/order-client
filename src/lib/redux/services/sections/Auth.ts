@@ -7,8 +7,18 @@ import { Api } from "../Api";
 export const Endpoints = Api.injectEndpoints({
   endpoints: (builder) => ({
     login: builder.mutation({
-      query: (data) => ({
-        url: "/api/user/login",
+      query: ({data,isAdmin}) => ({
+        url: `/api/user/login?isAdmin=${isAdmin}`,
+        method: "POST",
+        body: data,
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+        },
+      }),
+    }),
+     createEmployee:builder.mutation({
+      query: ({data}) => ({
+        url: `/api/user/employee`,
         method: "POST",
         body: data,
         headers: {
@@ -81,5 +91,6 @@ export const {
   useResendCodeMutation,
   useRegisterWithGoogleMutation,
   useCompleteRegisterWithGoogleMutation,
+  useCreateEmployeeMutation
   
 } = Endpoints;

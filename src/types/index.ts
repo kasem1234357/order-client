@@ -124,7 +124,8 @@ export type sectionType = [
   "Orders",
   "Roles",
   "Users",
-  "Settings"
+  "Settings",
+ "Material"
 ];
 export type enumSectionType = sectionType[number];
 export type RoutesConfig = {

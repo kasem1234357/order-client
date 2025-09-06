@@ -44,7 +44,8 @@ function OrderSidebar({
             gap-[16px]
             pt-[40px] px-[20px]
             border-b-[2px]
-            border-[#f3f3f3]
+          border-[#f3f3f3]
+            print:hidden
             ">
               <li className={cn("py-[5px] px-[10px] cursor-pointer ",pageType === 'details'&& 'bg-primary text-white rounded-md  -m-[1px]')} onClick={()=>{
                  setPageType('details')
