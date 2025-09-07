@@ -11,6 +11,7 @@ import { useDebounce } from "../../hooks/useDebounce";
 import CustomMenuList from "./AddGuestPlayerButton";
 type Props = {
   field: any;
+  isMulti?:boolean
   setValue: any;
   name: string;
   position?: "auto" | "bottom" | "top";
@@ -48,6 +49,7 @@ function SelectBox({
   field,
   position,
   optionValueKey,
+  isMulti=false,
   labelKey,
   turnOff = false,
   setValue,
@@ -250,17 +252,17 @@ function SelectBox({
         }
       }}
       isLoading={isLoading || isFetching}
-      value={
+      value={isMulti?field.value:
         options.find((option) => {
           //
-          //
-
+          
+       
           return option?.[optionValueKey] === field.value;
         }) || null
       }
       hideSelectedOptions={false}
       isSearchable={true}
-
+      isMulti={isMulti}
       // isClearable={true}
     />
   );

@@ -82,7 +82,15 @@ function UserForm({ removeAnimation, type = "new", rowData ,tableId}: Props) {
         
         try {
                await toast.promise(
-            createEmployee({data}).unwrap(),
+            createEmployee({
+              data:{
+                ...data,
+                //@ts-ignore
+                storage:data.storage?.map(item =>item.storage),
+                //@ts-ignore
+                stage:data.stage?.map(item =>item.value),
+              }
+            }).unwrap(),
             toastMessage()
           );
           reset(defaultData);
@@ -146,16 +154,19 @@ function UserForm({ removeAnimation, type = "new", rowData ,tableId}: Props) {
                                             requestFn={useGetAllStorageQuery}
                                             
                                             
-                                            
+                                            isMulti={true}
                                             name={`storage`}
                                             onChange={(selected: {
                                               id: number;
                                               name: string;
                                               price: number;
                                             }) => {
-                                              
-                                              // @ts-ignore only
-                                              return field.onChange(selected ? selected.storage : null);
+                                         console.log(selected);
+                                         
+            field.onChange(selected); // Update form state with full objects
+            //@ts-ignore
+            setValue('storage', selected); // Sync with form state
+            trigger('storage'); // Trigger validation
                                             }}
                                           />
                                         )}
@@ -254,7 +265,7 @@ function UserForm({ removeAnimation, type = "new", rowData ,tableId}: Props) {
                                           options={stages}
                                           requestFn={useGetAllRolesNamesQuery}
                                           
-                                          
+                                           isMulti={true}
                                           
                                           name={`stage`}
                                           onChange={(selected: {
@@ -262,9 +273,12 @@ function UserForm({ removeAnimation, type = "new", rowData ,tableId}: Props) {
                                             name: string;
                                             price: number;
                                           }) => {
-                                            
-                                            // @ts-ignore only
-                                            return field.onChange(selected ? selected.value : null);
+                                           console.log(selected);
+                                         
+            field.onChange(selected); // Update form state with full objects
+            //@ts-ignore
+            setValue('stage', selected); // Sync with form state
+            trigger('stage'); // Trigger validation
                                           }}
                                         />
                                       )}

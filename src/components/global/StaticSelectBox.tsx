@@ -41,6 +41,7 @@ type Props = {
   setNumberOfGuestUsers?: any;
   menuActionProps?: any;
   optionValueKey:string;
+  isMulti?:boolean;
   labelKey:string
   options:{
     [key : string]:string,
@@ -50,6 +51,7 @@ type Props = {
 
 function StaticSelectBox({
   field,
+  isMulti=false,
   position,
   optionValueKey,
   labelKey,
@@ -131,7 +133,7 @@ function StaticSelectBox({
       onChange={onChange}
       
       
-      value={
+      value={isMulti?field.value:
         options.find((option:any) => {
           //
           //
@@ -141,7 +143,7 @@ function StaticSelectBox({
       }
       hideSelectedOptions={false}
       isSearchable={true}
-
+      isMulti={isMulti}
       // isClearable={true}
     />
   );

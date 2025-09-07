@@ -88,18 +88,17 @@ function OrderTable({
                 label: "منشأ طلبات",
               },
             ];
-            console.log(row?.stage);
-            
-            const bookingStatus = bookingsStatusStyle.find((e) => (e.name === row?.stage?.toLowerCase() ));
+           
+            const bookingStatus = (item:string)=>bookingsStatusStyle.find((e) => (e.name === item?.toLowerCase() ));
             return (
               <td className="flex-1 p-4  min-w-[150px] text-center">
                 <div
                   className={cn(
                     "grid place-content-center px-4 py-2 rounded-3xl w-fit mx-auto whitespace-nowrap",
-                    `${bookingStatus?.bgColor} ${bookingStatus?.textColor}`
+                    ``
                   )}
                 >
-                  {bookingStatus?.label || row[tag]}
+                  {row[tag].map((item:string) => `${bookingStatus(item)?.label} , `)  }
                 </div>
               </td>
             );

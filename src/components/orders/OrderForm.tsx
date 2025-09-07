@@ -285,6 +285,27 @@ const OrderForm = ({ removeAnimation, type = "new", rowData ,tableId}: Props) =>
                     errors.price.type === "required" && <ValidateError />}
                 </div>
               </div>
+              <div className="hidden flex-1 gap-2 print:flex">
+                <div className="w-full">
+                  <Input
+                        inputProps={{
+                         
+                         type: "number",
+                         value:watch('price') * watch('weight'),
+                          onWheel: (e) => {
+                            e.preventDefault();
+                            //@ts-ignore
+                            e.target.blur();
+                          },
+                       
+                        }}
+                        label={'القيمة'}
+                        title={CURRENCY()}
+                       
+                       
+                      />
+                </div>
+              </div>
                <div className="flex flex-1 gap-2">
                 <div className="w-full">
                    <label className="block text-sm mb-2 text-primary dark:text-white">
